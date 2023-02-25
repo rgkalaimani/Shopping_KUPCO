@@ -1,0 +1,690 @@
+﻿
+@model List<ShoppingApplication.Models.Viewmodel.Order>
+@{
+    Layout = "~/Views/Shared/_ShoppingLayout.cshtml";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Home</title>
+</head>
+<body>
+    <script>
+        $(document).ready(function () {
+            console.log("ready!");
+            loadDiv("all");
+          
+
+
+
+            $('#liAllorder').click(function () {
+
+                loadDiv("all");
+
+            });
+
+            $('#liPendingorder').click(function () {
+
+                loadDiv("pending");
+
+            });
+
+            $('#liAcceptedorder').click(function () {
+
+                loadDiv("accepted");
+
+            });
+
+            $('#liCompletedorder').click(function () {
+
+                loadDiv("completed");
+
+            });
+
+
+            function loadDiv(divname) {
+
+                $('#divPendingorder').hide();
+                $('#divAcceptedorder').hide();
+                $('#divCompletedorder').hide();
+                $('#divAllorder').hide();
+                $('#divorderItem').hide();
+                $('#divOrderTotal').hide();
+                $('#divDelivery').hide();
+                
+
+                if (divname === "all") {
+                    $('#divAllorder').show();
+                }
+                else if (divname === "pending") {
+                    $('#divPendingorder').show();
+                }
+                else if (divname === "accepted") {
+                    $('#divAcceptedorder').show();
+                }
+                else if (divname === "completed") {
+                    $('#divCompletedorder').show();
+                }
+
+            }
+
+
+            $('.dataRow').click(function () {
+                console.log(this);
+
+                var oId = $(this).attr("orderid");
+
+                $.ajax({
+                    type: "GET",
+                    url: "http://localhost:50174/api/apiorder/" + oId,
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+
+
+                        //$("#MemberList").empty();
+
+                        var orderInfo = JSON.parse(response);
+                        var delivery = orderInfo.delivery;
+                        console.log(orderInfo);
+                        var totalAmount = "";
+
+                        console.log(orderInfo);
+                        // var orderItm = orderInfo.orderItems;
+                        $("#divorderItem").empty();
+
+                        $("#divorderItem").append("<h5 class='mb - 4'> Items</h5 ><hr/>");
+                        $.each(orderInfo.orderItems, function (index, orderItm) {
+                            console.log(orderItm.OrderId)
+
+                            totalAmount = orderItm.TotalAmount;
+
+                            var divData = "<div class='d-flex justify-content-between my-2 pb-3 border-bottom'> <div><strong>" + orderItm.Item + "</strong></div><div><strong>" + orderItm.Amount + "</strong></div>";
+
+
+                            $("#divorderItem").append(divData);
+
+
+                        });
+
+                        $("#divOrderTotal").empty();
+                        $('#divOrderTotal').append("<div><strong>Total</strong></div>   <div><strong>KWD " + totalAmount + "</strong></div>");
+
+
+                        $("#divDelAddr").empty();
+                        $('#divDelAddr').append(delivery.Address);
+                      //  $('#divDelAddr').append("<div>" + delivery.ContactNumber + "</div>div>" + delivery.Email + "</div > ");
+
+
+
+                      
+
+                        $("#divDelContact").empty();
+                        $("#divDelContact").append("<div> " + delivery.ContactNumber + "</div><div>" + delivery.Email + "</div>");
+
+
+                        $('#divorderItem').show();
+                        $('#divOrderTotal').show();
+                        $('#divDelivery').show();
+                      //  $("#divOrderTotal").show();
+
+                    },
+                    failure: function (response) {
+                        alert(response.responseText);
+                        alert("Failure");
+                    },
+                    error: function (response) {
+                        alert(response);
+                        alert("Error");
+                    }
+                });
+
+            });
+
+
+
+
+            jQuery.fn.extend({
+
+                // check checkboxes
+                check: function () {
+                    return this.each(function () {
+                        this.checked = true;
+                    });
+                },
+
+                // uncheck checkboxes
+                uncheck: function () {
+                    return this.each(function () {
+                        this.checked = false;
+                    });
+                }
+
+            });
+
+        });
+    </script>
+    <div>
+
+
+    </div>
+    <div class="container-fluid py-4">
+        <div class="nav-wrapper position-relative end-0">
+            <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                <li class="nav-item" id="liAllorder">
+                    <a class="nav-link mb-0 px-0 py-1 active"
+                       data-bs-toggle="tab"
+                       href="#profile-tabs-simple"
+                       role="tab"
+                       aria-controls="profile"
+                       aria-selected="true">
+                        All
+                    </a>
+                </li>
+                <li class="nav-item" id="liPendingorder">
+                    <a class="nav-link mb-0 px-0 py-1"
+                       data-bs-toggle="tab"
+                       href="#dashboard-tabs-simple"
+                       role="tab"
+                       aria-controls="dashboard"
+                       aria-selected="false">
+                        Pending
+                    </a>
+                </li>
+                <li class="nav-item" id="liAcceptedorder">
+                    <a class="nav-link mb-0 px-0 py-1"
+                       data-bs-toggle="tab"
+                       href="#dashboard-tabs-simple"
+                       role="tab"
+                       aria-controls="dashboard"
+                       aria-selected="false">
+                        Accepted
+                    </a>
+                </li>
+                <li class="nav-item" id="liCompletedorder">
+                    <a class="nav-link mb-0 px-0 py-1"
+                       data-bs-toggle="tab"
+                       href="#dashboard-tabs-simple"
+                       role="tab"
+                       aria-controls="dashboard"
+                       aria-selected="false">
+                        Completed
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        @if (Model != null)
+        {
+            foreach (var item in Model)
+            {
+                @*<div>This view is orderlist</div>*@
+            }
+
+            var pendingList = Model.Where(x => x.Status.ToLower() == "pending").ToList();
+            var acceptedList = Model.Where(x => x.Status.ToLower() == "accepted").ToList();
+            var completedList = Model.Where(x => x.Status.ToLower() == "completed").ToList();
+
+            if (pendingList.Count > 0)
+            {
+                <div class="row mt-4" id="divPendingorder">
+                    <div class="col-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-header pb-0 p-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-2"></h6>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <tbody>
+                                        @foreach (var item in pendingList)
+                                        {
+                                            <tr class="dataRow" orderid="@item.OrderId ">
+                                                <td class="w-30">
+                                                    <div class="ms-4">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            06 Feb 2023
+                                                        </p>
+                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
+                                                        <h6 class="text-sm mb-0">صالح</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-bus text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">Delivery</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                Shuwaik - Mubarkal kaber
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle text-sm">
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-money text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">KNET</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                20.5 KWD
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-30">
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
+                                                            Scheduled
+                                                        </p>
+                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center text-success">
+                                                        <span>
+                                                            <i class="fa fa-circle fs-6"></i>
+                                                            <small> @item.Status </small>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            if (acceptedList.Count > 0)
+            {
+                <div class="row mt-4" id="divAcceptedorder">
+                    <div class="col-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-header pb-0 p-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-2"></h6>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <tbody>
+
+                                        @foreach (var item in acceptedList)
+                                        {
+                                            <tr class="dataRow" orderid="@item.OrderId ">
+                                                <td class="w-30">
+                                                    <div class="ms-4">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            06 Feb 2023
+                                                        </p>
+                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
+                                                        <h6 class="text-sm mb-0">صالح</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-bus text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">Delivery</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                Shuwaik - Mubarkal kaber
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle text-sm">
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-money text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">KNET</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                20.5 KWD
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-30">
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
+                                                            Scheduled
+                                                        </p>
+                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center text-success">
+                                                        <span>
+                                                            <i class="fa fa-circle fs-6"></i>
+                                                            <small> @item.Status </small>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            if (completedList.Count > 0)
+            {
+                <div class="row mt-4" id="divCompletedorder">
+                    <div class="col-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-header pb-0 p-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-2"></h6>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <tbody>
+                                        @foreach (var item in completedList)
+                                        {
+                                            <tr class="dataRow" orderid="@item.OrderId ">
+                                                <td class="w-30">
+                                                    <div class="ms-4">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            06 Feb 2023
+                                                        </p>
+                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
+                                                        <h6 class="text-sm mb-0">صالح</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-bus text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">Delivery</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                Shuwaik - Mubarkal kaber
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle text-sm">
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-money text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">KNET</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                20.5 KWD
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-30">
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
+                                                            Scheduled
+                                                        </p>
+                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center text-success">
+                                                        <span>
+                                                            <i class="fa fa-circle fs-6"></i>
+                                                            <small> @item.Status </small>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+
+            if (Model.Count > 0)
+            {
+                <div class="row mt-4" id="divAllorder">
+                    <div class="col-12 mb-lg-0 mb-4">
+                        <div class="card">
+                            <div class="card-header pb-0 p-3">
+                                <div class="d-flex justify-content-between">
+                                    <h6 class="mb-2"></h6>
+                                </div>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <tbody>
+                                        @foreach (var item in Model)
+                                        {
+                                            <tr class="dataRow" orderid="@item.OrderId ">
+                                                <td class="w-30">
+                                                    <div class="ms-4">
+                                                        <p class="text-xs font-weight-bold mb-0">
+                                                            06 Feb 2023
+                                                        </p>
+                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
+                                                        <h6 class="text-sm mb-0">صالح</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-bus text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">Delivery</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                Shuwaik - Mubarkal kaber
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="align-middle text-sm">
+                                                    <div class="d-flex px-2 py-1 align-items-center">
+                                                        <div>
+                                                            <i class="fa fa-money text-secondary"></i>
+                                                        </div>
+                                                        <div class="ms-4">
+                                                            <small class="text-seconda">KNET</small>
+                                                            <p class="text-xs font-weight-bold mb-0">
+                                                                20.5 KWD
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                                <td class="w-30">
+                                                    <div class="text-center1">
+                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
+                                                            Scheduled
+                                                        </p>
+                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center text-success">
+                                                        <span>
+                                                            <i class="fa fa-circle fs-6"></i>
+                                                            <small> @item.Status  </small>
+                                                        </span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        }
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        <div class="mt-5">
+            <div class="card">
+                <div class="card-header pb-0 p-3"></div>
+                <div class="card-body">
+                    <div class="row gy-2">
+                        <div class="col-12 col-md-6">
+                            <div class="p-2" id="divorderItem">
+
+
+                                @*  <h5 class="mb-4">
+                                        Items
+                                    </h5>
+                                    <hr>
+                                                                <div class="d-flex justify-content-between my-2 pb-3 border-bottom">
+                                            <div><strong>1 X Chicken Legs</strong></div>
+                                            <div><strong>KWD 0.500</strong></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between my-2 pb-3 border-bottom">
+                                            <div><strong>1 X Chicken Legs</strong></div>
+                                            <div><strong>KWD 0.500</strong></div>
+                                        </div> <div class="d-flex justify-content-between my-2 pb-3 border-bottom">
+                                            <div><strong>1 X Chicken Legs</strong></div>
+                                            <div><strong>KWD 0.500</strong></div>
+                                        </div> <div class="d-flex justify-content-between my-2 pb-3 border-bottom">
+                                            <div><strong>1 X Chicken Legs</strong></div>
+                                            <div><strong>KWD 0.500</strong></div>
+                                        </div>*@
+
+                            </div>
+                            <div id="divOrderTotal" class="d-flex justify-content-between my-5 pb-3 text-dark">
+                                @*<div><strong>Total</strong></div>
+                                    <div><strong>KWD 2.000</strong></div>*@
+                            </div>
+                        </div>
+
+                        <div id="divDelivery" class="col-12 col-md-6 bg-light rounded">
+                            <div class="p-2">
+                                <h5 class="mb-4">
+                                    Delivery Address
+                                </h5>
+                                <div id="divDelAddr">
+                                    @*City: Farwaniya,
+                                        Block: City Name,
+                                        Street: Street Name,
+                                        House: 123*@
+
+                                </div>
+                                <h5 class="mt-4">
+                                    Contact Info
+                                </h5>
+                                <div id="divDelContact">
+                                    @*<div>67752067</div>
+                                        <div>
+                                            Salih@gmail.dom
+                                        </div>*@
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 bg-light rounded">
+                            <div class="p-2">
+                                <h5 class="mb-4">
+                                    Payment Method
+                                </h5>
+                                <div class="d-flex justify-content-between my-2 pb-3">
+                                    <div><strong>KENT</strong></div>
+                                    <div><strong>KWD 2.500</strong></div>
+                                </div>
+                            </div>
+
+                            <div class="p-2">
+
+                                <div class="d-flex justify-content-between my-2 pb-3">
+                                    <div>
+                                        <h5 class="mb-1">
+                                            Print
+                                        </h5>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                                            <label class="custom-control-label" for="customRadio1">A4</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio2">
+                                            <label class="custom-control-label" for="customRadio2">Thermal</label>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h5 class="mb-2">
+                                            Language
+                                        </h5>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault1" id="customRadio11">
+                                            <label class="custom-control-label" for="customRadio11">English</label>
+                                        </div>
+                                        <div class="form-check">
+                                            <input class="form-check-input" type="radio" name="flexRadioDefault1" id="customRadio22">
+                                            <label class="custom-control-label" for="customRadio22">Arabic</label>
+                                        </div>
+                                    </div>
+                                    <div class="my-auto">
+                                        <h5 class="mb-2">
+                                            Status
+                                        </h5>
+                                        <div class="badge bg-success">Delivered</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
