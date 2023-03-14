@@ -1,0 +1,90 @@
+﻿
+@model ShoppingApplication.Models.Viewmodel.OrderInfo
+@{
+    Layout = null;
+}
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+<!DOCTYPE html>
+
+<script>
+
+    $(document).ready(function () {
+
+        // alert("page is loaded");
+
+        //setTimeout(function () {
+        //    alert('page is loaded and 1 minute has passed');
+        //}, 60000);
+
+        window.print();
+    });
+
+
+
+</script>
+
+<html lang="@ViewBag.lang" dir="@ViewBag.dir">
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>Print</title>
+    <style>
+
+        .receipt tr {
+            border: 1px;
+            border-style: solid;
+            border-color: black;
+        }
+
+        .receipt td {
+            border: 1px;
+            border-style: solid;
+            border-color: black;
+            padding: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        @if (Model != null)
+        {
+
+            if (Model.orderItems != null)
+            {
+                int count = 1;
+
+                <table class="receipt">
+
+                    <tr>
+                        <td>#</td>
+                        <td>Name  </td>
+                        <td>
+                            Amount
+                        </td>
+                    </tr>
+
+                    @foreach (var item in Model.orderItems)
+                    {
+
+
+                        <tr>
+                            <td>@count.ToString()</td>
+                            <td>@item.Item  </td>
+                            <td>
+                                @item.Amount.ToString()
+                                @{count = count + 1;
+                                }
+                            </td>
+                        </tr>
+
+
+                    }
+
+                </table>
+            }
+
+        }
+
+    </div>
+</body>
+</html>

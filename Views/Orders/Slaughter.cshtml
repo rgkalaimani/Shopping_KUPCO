@@ -1,0 +1,206 @@
+﻿
+
+@model List<ShoppingApplication.Models.Viewmodel.Slaughter>
+
+@{
+    ViewBag.Title = "Slaughter";
+    Layout = "~/Views/Shared/_ShoppingLayout.cshtml";
+
+
+}
+<script type="text/javascript">
+
+    $('html').attr('lang', $('#hdnLang').val());
+    $('html').attr('dir', $('#hdnDir').val());
+
+    $(function () {
+        $("#btnSubmit").click(function () {
+            /// window.open("http://localhost:50174/orders/export");
+            window.print();
+
+        });
+    });
+</script>
+
+<style>
+
+    @@page {
+        size: 7in 9.25in;
+        margin: 27mm 16mm 27mm 16mm;
+    }
+
+    .slaughterData tr
+    {
+        border:1px;
+        border-style:solid;
+
+    }
+
+    .slaughterData td {
+        border: 1px;
+        border-style: solid;
+    }
+
+    .printme {
+	display: none;
+}
+@@media print {
+	.no-printme{
+		display: none;
+	}
+	.printme  {
+		display: block;
+	}
+}
+
+</style>
+
+<div>
+
+    <div class="container-fluid py-4">
+        <section class="">
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="no-printme">Slaughter List</h5>
+
+                    <input type="submit" id="btnSubmit" value="Print" class="no-printme" />
+
+                    @*@using (Html.BeginForm("Export", "Orders", FormMethod.Post))
+                        {
+                            <input type="hidden" name="GridHtml" />
+                            <input type="submit" id="btnSubmit" value="Report" />
+                        }*@
+
+
+                </div>
+
+                @if (Model != null)
+                {
+
+                    <table id="slaughterData" class="slaughterData">
+                        <tbody>
+                            <tr>
+                                <td>
+
+                                    <h5>Delivery Date</h5>
+
+                                </td>
+                                <td>
+                                    <div>
+                                        <h5>Name</h5>
+                                    </div>
+                                </td>                                
+                                <td>
+                                    <div>
+                                        <h5>Frozen</h5>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div>
+                                        <h5>Fresh Eggs</h5>
+                                    </div>
+                                </td>
+
+                                <td>
+                                    <div class="ms-4">
+                                        <h5>Fresh</h5>
+                                    </div>
+                                </td>
+
+                            </tr>
+                            @foreach (var item in Model)
+                            {
+                                <tr>
+                                    <td>
+
+                                        <h7>@item.DeliveryDate</h7>
+
+                                    </td>
+                                    <td>
+                                        <div>
+                                            <h7>@item.Name / @item.Name_Ar</h7>
+                                        </div>
+                                    </td>
+                                    
+                                    <td>
+                                        <div>
+                                            <h7>@item.Frozen</h7>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div>
+                                            <h7> @item.FreshEggs</h7>
+                                        </div>
+                                    </td>
+
+                                    <td>
+                                        <div class="ms-4">
+                                            <h7>  @item.Fresh</h7>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                @*<tr class="dataRow">
+                                        <td class="w-30">
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.DeliveryDate
+                                                </p>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.Name
+                                                </p>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.Name_Ar
+                                                </p>
+
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.Frozen
+                                                </p>
+
+                                            </div>
+                                        </td>
+                                        <td class="align-middle text-sm">
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.FreshEggs
+                                                </p>
+
+                                            </div>
+                                        </td>
+                                        <td class="w-30">
+                                            <div class="ms-4">
+                                                <p class="text-xs font-weight-bold mb-0">
+                                                    @item.Fresh
+                                                </p>
+
+                                            </div>
+                                        </td>
+
+                                    </tr>*@
+                            }
+
+                        </tbody>
+                    </table>
+
+                }
+
+            </div>
+        </section>
+    </div>
+</div>
+
