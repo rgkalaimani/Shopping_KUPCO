@@ -52,7 +52,7 @@ function swithLang() {
 }
 
 function loadExtranalfile(id, fileName, fileType) {
-  fileName = "../content/assets/css/" + fileName;
+  fileName = "/content/assets/css/" + fileName;
   if (fileType == "js") {
     //if filename is a external JavaScript file
     var fileref = document.createElement("script");

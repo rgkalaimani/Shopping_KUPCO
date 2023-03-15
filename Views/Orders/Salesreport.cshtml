@@ -6,147 +6,288 @@
 
 
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>KUPCO | Sales Report</title>
 
-<div class="container-fluid py-4">
-    <section class="">
-        <div class="card">
-            <div class="card-body">
-                <h3>Sales Report</h3>
+    <link rel="apple-touch-icon"
+          sizes="180x180"
+          href="../assets/fav/apple-touch-icon.png" />
+    <link rel="icon"
+          type="image/png"
+          sizes="32x32"
+          href="../assets/fav/favicon-32x32.png" />
+    <link rel="icon"
+          type="image/png"
+          sizes="16x16"
+          href="../assets/fav/favicon-16x16.png" />
+    <link rel="manifest" href="../assets/fav/site.webmanifest" />
 
-                <!-- Content goes here... -->
+    <link id="css-ltr"
+          rel="stylesheet"
+          href="../assets/css/bootstrap.min.css" />
+    <!-- Keep linkBootstrap for dynamic language -->
+    <link rel="stylesheet" href="/" id="linkBootstrap" />
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"
+          integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+    <!-- Nucleo Icons -->
+    <link href="../Content/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="../Content/assets/css/nucleo-svg.css" rel="stylesheet" />
+    <link id="pagestyle" href="../Content/assets/css/dashboard.css" rel="stylesheet" />
+    <link rel="stylesheet" href="../Content/assets/css/custom.css" />
 
+
+    <script src="~/Scripts/appsettings.js"></script>
+
+    
+</head>
+
+
+<body class="g-sidenav-show bg-gray-100">
+    <div class="min-height-300 bg-primary position-fixed w-100 bg-app-yg"></div>
+
+    <main class="main-content position-relative border-radius-lg">
+
+        <div class="container-fluid py-4">
+            <div class="row my-3">
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                                            Today's Order
+                                        </p>
+                                        <h5 class="font-weight-bolder" id="todayorder"></h5>
+
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                        <i class="ni ni-money-coins text-lg opacity-10"
+                                           aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                                            Today's Sales
+                                        </p>
+                                        <h5 class="font-weight-bolder" id="todaysales"></h5>
+
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                        <i class="ni ni-world text-lg opacity-10"
+                                           aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                                            Current Month Order
+                                        </p>
+                                        <h5 class="font-weight-bolder" id="crmonthorder"></h5>
+
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                        <i class="ni ni-paper-diploma text-lg opacity-10"
+                                           aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xl-3 col-sm-6">
+                    <div class="card">
+                        <div class="card-body p-3">
+                            <div class="row">
+                                <div class="col-8">
+                                    <div class="numbers">
+                                        <p class="text-sm mb-0 text-uppercase font-weight-bold">
+                                            Current Month Sales
+                                        </p>
+                                        <h5 class="font-weight-bolder" id="crmonthsales"></h5>
+                                    </div>
+                                </div>
+                                <div class="col-4 text-end">
+                                    <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                        <i class="ni ni-cart text-lg opacity-10"
+                                           aria-hidden="true"></i>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-lg-12 mb-lg-0 mb-4">
+                    <div class="card">
+                        <div class="card-header pb-0 p-3">
+                            <div class="d-flex justify-content-between">
+                                <h6 class="mb-2">Orders by Call-center users</h6>
+                            </div>
+                        </div>
+                        <div class="card-body">
+
+                            <div class="table-responsive">
+                                <table class="table align-items-center">
+                                    <tbody id="reportBody">
+                                        @*<tr>
+                                                <td class="w-30">
+                                                    27/02/2023
+                                                </td>
+                                                <td>
+                                                    <div class="text-start">
+                                                        <p class="text-xs font-weight-bold mb-0">Mohamed Salihu</p>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div class="text-center">
+                                                        <h6 class="text-sm mb-0">15</h6>
+                                                    </div>
+                                                </td>
+                                            </tr>*@
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-    </section>
-</div>
+    </main>
+    <script src="../Content/assets/js/jquery-3.6.3.min.js"></script>
+    <script src="../Content/assets/js/app-data.js"></script>
+    <script src="../Content/assets/js/lang.js"></script>
+    <script src="../Content/assets/js/site.js"></script>
 
-<script src="../content/assets/js/jquery-3.6.3.min.js"></script>
-<script src="../content/assets/js/app-data.js"></script>
-<script src="../content/assets/js/lang.js"></script>
-<script src="../content/assets/js/site.js"></script>
-<script>
-      // Page variables
-      var divLogin = $("#divLogin");
-      var divOrder = $("#divOrder");
-      var btnCustomerNext = $("#btnCustomerNext");
-      var isExistingCustomer = false;
+    <script>
 
-      // Pre-define function
-      function handleCustNextBtnState(disalbeState) {
-        btnCustomerNext.attr("disabled", disalbeState);
-      }
-      function bindCustomerDetail() {
-        var custDetail = getSessionCustomer();
-        if (custDetail) {
-          $("#lblCustName").text(custDetail.name);
-          $("#lblCustMobile").text(custDetail.mobile);
-          $("#lblCustAddress").text(custDetail.address);
-        }
-      }
-      function handleView(clickedAction) {
-        if (clickedAction == "login") {
-          divLogin.hide();
-          divOrder.hide();
-          divRegister.show("slow");
-        }
-        if (clickedAction == "register") {
-          // divRegister.hide();
-          divOrder.hide();
-          divLogin.show("slow");
-        }
-      }
-      function clearCustomerInfo() {
-        $("#txtCustMobile").val("");
-        $("#txtRCustName").val("");
-        $("#txtRCustMobile").val("");
-        $("#txtRCustCity").val("");
-        $("#txtRCustBlock").val("");
-        $("#txtRCustStreet").val("");
-        $("#txtRCustBuilding").val("");
-        sessionStorage.removeItem("customer");
-      }
+        $(document).ready(function () {
 
-      // on init
-      clearCustomerInfo();
-</script>
+            $('html').attr('lang', $('#hdnLang').val());
+            $('html').attr('dir', $('#hdnDir').val());
 
-<script>
-      function handleCustomerLogin() {
-        var txtCustMobile = $("#txtCustMobile").val();
+            $('#reportBody').empty();
 
-        if (!txtCustMobile) {
-          alert("Please enter mobile number");
-          return false;
-        }
+            $('#crmonthsales').text("");
+            $('#crmonthorder').text("");
 
-        isExistingCustomer = false;
-        clearCustomerInfo();
-        var tempAppUsers = getAppUsers();
+            $('#todaysales').text("");
+            $('#todayorder').text("");
 
-        var cust = tempAppUsers.filter((item) => item.mobile == txtCustMobile);
 
-        if (cust.length == 0) {
-          alert("Customer not found.");
-          return false;
-        }
 
-        setSessionCustomer(cust[0]);
+            $.ajax({
+                type: "GET",
+                url: appBaseUrl + "apireport/daily",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
 
-        $("#txtRCustName").val(cust[0].name);
-        $("#txtRCustMobile").val(cust[0].mobile);
-        $("#txtRCustAddress").val(cust[0].address);
-        $("#txtRCustCity").val(cust[0].city);
-        $("#txtRCustBlock").val(cust[0].block);
-        $("#txtRCustStreet").val(cust[0].street);
-        $("#txtRCustBuilding").val(cust[0].building);
+                    var jobj = JSON.parse(response);
+                    var rptList = (jobj.reportInfo);
+                    var rpt = jobj.reportTtotalInfo;
 
-        isExistingCustomer = true;
-      }
-      function handleCustomerNext() {
-        if (isExistingCustomer) {
-          window.location.href = "./order.html";
-          return true;
-        }
+                    for (var i = 0; i < rptList.length; i++) {
 
-        var txtRCustName = $("#txtRCustName").val();
-        var txtRCustMobile = $("#txtRCustMobile").val();
-        // var txtRCustAddress = $("#txtRCustAddress").val();
-        var txtRCustCity = $("#txtRCustCity").val();
-        var txtRCustBlock = $("#txtRCustBlock").val();
-        var txtRCustStreet = $("#txtRCustStreet").val();
-        var txtRCustBuilding = $("#txtRCustBuilding").val();
-        if (!txtRCustName) {
-          alert("Please enter the name");
-          return false;
-        }
-        if (!txtRCustMobile) {
-          alert("Please enter the mobile number");
-          return false;
-        }
-        if (!txtRCustCity) {
-          alert("Please select the city");
-          return false;
-        }
-        if (!txtRCustBlock) {
-          alert("Please enter the block");
-          return false;
-        }
-        if (!txtRCustStreet) {
-          alert("Please enter the street");
-          return false;
-        }
-        if (!txtRCustBuilding) {
-          alert("Please enter the building");
-          return false;
-        }
-        setSessionCustomer({
-          name: txtRCustName,
-          mobile: txtRCustMobile,
-          city: txtRCustCity,
-          block: txtRCustBlock,
-          street: txtRCustStreet,
-          building: txtRCustBuilding,
+                        var td = `<tr>
+                                    <td class="w-30">
+                                        {createdon}
+                                    </td>
+                                    <td>
+                                        <div class="text-start">
+                                            <p class="text-xs font-weight-bold mb-0">{Name}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="text-center">
+                                            <h6 class="text-sm mb-0">{orders}</h6>
+                                        </div>
+                                    </td>
+                                </tr>`;
+
+
+                        td = td.replace('{Name}', rptList[i].Name);
+                        td = td.replace('{createdon}', rptList[i].CreatedOn);
+                        td = td.replace('{orders}', rptList[i].CreatedOrders);
+
+
+                        $('#reportBody').append(td);
+
+                    }
+
+
+                    //console.log(rpt);
+
+                    //var td1 = ' <tr class="dataRow"><td class="w-30"><div class="ms-4"><h5 class="text-sm mb-0"></h5></div></td>';
+                    //td1 = td1 + '<td><div class="ms-4"><h3 class="text-sm mb-0"> Total Order: ' + rpt.TotalOrders + ' </h3></div></td>';
+                    //td1 = td1 + '<td><div class="ms-4"><h3 class="text-sm mb-0"> Total Amount: ' + rpt.TotalAmount + ' </h3></div></td></tr>';
+
+
+                    //$('#reportBody').append(td1);
+
+
+                    $('#crmonthsales').text(rpt.MonthlySales + " KWD ");
+                    $('#crmonthorder').text(rpt.MonthlyOrders );
+
+                    $('#todaysales').text(rpt.TodaySales + " KWD ");
+                    $('#todayorder').text(rpt.TodayOrders);
+                    
+
+
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                    alert("Failure");
+                },
+                error: function (response) {
+                    alert(response);
+                    alert("Error");
+                }
+            });
+
+
+
+
+
+
         });
-        window.location.href = "/admin/products.html";
-      }
-</script>
+
+
+
+    </script>
+
+</body>
+</html>

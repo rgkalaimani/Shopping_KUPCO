@@ -6,19 +6,35 @@
 
 <!DOCTYPE html>
 
+
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
     <title>Home</title>
+    <script src="~/Scripts/appsettings.js"></script>
+    <script src="~/Scripts/ordersAll.js"></script>
+
+    <style>
+        .popup-overlay {
+            visibility: hidden;
+        }
+
+        .popup-content {
+            visibility: hidden;
+        }
+    </style>
 </head>
 <body>
     <script>
         $(document).ready(function () {
-            console.log("ready!");
+
+            $('#printDiv').hide();
+
+
+            $('html').attr('lang', $('#hdnLang').val());
+            $('html').attr('dir', $('#hdnDir').val());
+
             loadDiv("all");
-          
-
-
 
             $('#liAllorder').click(function () {
 
@@ -44,17 +60,26 @@
 
             });
 
+            $('#liCancelledorder').click(function () {
+
+                loadDiv("cancelled");
+
+            });
+
 
             function loadDiv(divname) {
 
+
+                $('#divCancelledorder').hide();
                 $('#divPendingorder').hide();
                 $('#divAcceptedorder').hide();
                 $('#divCompletedorder').hide();
                 $('#divAllorder').hide();
                 $('#divorderItem').hide();
-                $('#divOrderTotal').hide();
+                //$('#divOrderTotal').hide();
+                $('#divOrderTotal').empty();
                 $('#divDelivery').hide();
-                
+
 
                 if (divname === "all") {
                     $('#divAllorder').show();
@@ -68,32 +93,32 @@
                 else if (divname === "completed") {
                     $('#divCompletedorder').show();
                 }
+                else if (divname === "cancelled") {
+                    $('#divCancelledorder').show();
+                }
 
             }
 
 
-            $('.dataRow').click(function () {
+            $('.dataRow2').click(function () {
                 console.log(this);
 
                 var oId = $(this).attr("orderid");
 
                 $.ajax({
                     type: "GET",
-                    url: "http://localhost:50174/api/apiorder/" + oId,
+                    url: appBaseUrl + "/apiorder/getbyid/" + oId,
                     contentType: "application/json; charset=utf-8",
                     dataType: "json",
                     success: function (response) {
 
 
-                        //$("#MemberList").empty();
 
                         var orderInfo = JSON.parse(response);
                         var delivery = orderInfo.delivery;
                         console.log(orderInfo);
                         var totalAmount = "";
 
-                        console.log(orderInfo);
-                        // var orderItm = orderInfo.orderItems;
                         $("#divorderItem").empty();
 
                         $("#divorderItem").append("<h5 class='mb - 4'> Items</h5 ><hr/>");
@@ -116,20 +141,20 @@
 
                         $("#divDelAddr").empty();
                         $('#divDelAddr').append(delivery.Address);
-                      //  $('#divDelAddr').append("<div>" + delivery.ContactNumber + "</div>div>" + delivery.Email + "</div > ");
+                        //  $('#divDelAddr').append("<div>" + delivery.ContactNumber + "</div>div>" + delivery.Email + "</div > ");
 
 
 
-                      
+
 
                         $("#divDelContact").empty();
-                        $("#divDelContact").append("<div> " + delivery.ContactNumber + "</div><div>" + delivery.Email + "</div>");
+                        $("#divDelContact").append("<div> " + delivery.ContactNumber + "</div><div></div>");
 
 
                         $('#divorderItem').show();
                         $('#divOrderTotal').show();
                         $('#divDelivery').show();
-                      //  $("#divOrderTotal").show();
+                        //  $("#divOrderTotal").show();
 
                     },
                     failure: function (response) {
@@ -145,23 +170,21 @@
             });
 
 
+            /*------Printing------*/
+
+            $("#btnReceiptPrint").click(function () {
 
 
-            jQuery.fn.extend({
 
-                // check checkboxes
-                check: function () {
-                    return this.each(function () {
-                        this.checked = true;
-                    });
-                },
+                //$('.popup-content').addClass('active');
 
-                // uncheck checkboxes
-                uncheck: function () {
-                    return this.each(function () {
-                        this.checked = false;
-                    });
-                }
+                var id = $('#btnReceiptPrint').attr('productid');
+
+              
+
+                var optLang = $('input[name="printlanguage"]:checked').val();
+
+                window.open(host + "/Orders/print?oid=" + id + "&la=" + optLang);
 
             });
 
@@ -181,7 +204,7 @@
                        role="tab"
                        aria-controls="profile"
                        aria-selected="true">
-                        All
+                        @Resources.Global.All
                     </a>
                 </li>
                 <li class="nav-item" id="liPendingorder">
@@ -191,7 +214,7 @@
                        role="tab"
                        aria-controls="dashboard"
                        aria-selected="false">
-                        Pending
+                        @Resources.Global.Pending
                     </a>
                 </li>
                 <li class="nav-item" id="liAcceptedorder">
@@ -201,7 +224,7 @@
                        role="tab"
                        aria-controls="dashboard"
                        aria-selected="false">
-                        Accepted
+                        @Resources.Global.Accepted
                     </a>
                 </li>
                 <li class="nav-item" id="liCompletedorder">
@@ -211,360 +234,175 @@
                        role="tab"
                        aria-controls="dashboard"
                        aria-selected="false">
-                        Completed
+                        @Resources.Global.Completed
+                    </a>
+                </li>
+                <li class="nav-item" id="liCancelledorder">
+                    <a class="nav-link mb-0 px-0 py-1"
+                       data-bs-toggle="tab"
+                       href="#dashboard-tabs-simple"
+                       role="tab"
+                       aria-controls="dashboard"
+                       aria-selected="false">
+                        @Resources.Global.Cancelled
                     </a>
                 </li>
             </ul>
         </div>
 
-        @if (Model != null)
-        {
-            foreach (var item in Model)
-            {
-                @*<div>This view is orderlist</div>*@
-            }
 
-            var pendingList = Model.Where(x => x.Status.ToLower() == "pending").ToList();
-            var acceptedList = Model.Where(x => x.Status.ToLower() == "accepted").ToList();
-            var completedList = Model.Where(x => x.Status.ToLower() == "completed").ToList();
 
-            if (pendingList.Count > 0)
-            {
-                <div class="row mt-4" id="divPendingorder">
-                    <div class="col-12 mb-lg-0 mb-4">
-                        <div class="card">
-                            <div class="card-header pb-0 p-3">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-2"></h6>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center">
-                                    <tbody>
-                                        @foreach (var item in pendingList)
-                                        {
-                                            <tr class="dataRow" orderid="@item.OrderId ">
-                                                <td class="w-30">
-                                                    <div class="ms-4">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            06 Feb 2023
-                                                        </p>
-                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
-                                                        <h6 class="text-sm mb-0">صالح</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-bus text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">Delivery</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                Shuwaik - Mubarkal kaber
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="align-middle text-sm">
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-money text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">KNET</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                20.5 KWD
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="w-30">
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
-                                                            Scheduled
-                                                        </p>
-                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center text-success">
-                                                        <span>
-                                                            <i class="fa fa-circle fs-6"></i>
-                                                            <small> @item.Status </small>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        }
-
-                                    </tbody>
-                                </table>
-                            </div>
+        <div class="row mt-4" id="divAcceptedorder">
+            <div class="col-12 mb-lg-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0 p-3">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-2"></h6>
                         </div>
                     </div>
-                </div>
-            }
-
-            if (acceptedList.Count > 0)
-            {
-                <div class="row mt-4" id="divAcceptedorder">
-                    <div class="col-12 mb-lg-0 mb-4">
-                        <div class="card">
-                            <div class="card-header pb-0 p-3">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-2"></h6>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center">
-                                    <tbody>
-
-                                        @foreach (var item in acceptedList)
-                                        {
-                                            <tr class="dataRow" orderid="@item.OrderId ">
-                                                <td class="w-30">
-                                                    <div class="ms-4">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            06 Feb 2023
-                                                        </p>
-                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
-                                                        <h6 class="text-sm mb-0">صالح</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-bus text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">Delivery</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                Shuwaik - Mubarkal kaber
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="align-middle text-sm">
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-money text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">KNET</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                20.5 KWD
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="w-30">
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
-                                                            Scheduled
-                                                        </p>
-                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center text-success">
-                                                        <span>
-                                                            <i class="fa fa-circle fs-6"></i>
-                                                            <small> @item.Status </small>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        }
-
-
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody id="accepteditembody">
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <nav>
+                            <ul id="acceptedpagingli" class="pagination justify-content-end pagination-warning">
+                            </ul>
+                        </nav>
                     </div>
                 </div>
-            }
+            </div>
+        </div>
 
-            if (completedList.Count > 0)
-            {
-                <div class="row mt-4" id="divCompletedorder">
-                    <div class="col-12 mb-lg-0 mb-4">
-                        <div class="card">
-                            <div class="card-header pb-0 p-3">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-2"></h6>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center">
-                                    <tbody>
-                                        @foreach (var item in completedList)
-                                        {
-                                            <tr class="dataRow" orderid="@item.OrderId ">
-                                                <td class="w-30">
-                                                    <div class="ms-4">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            06 Feb 2023
-                                                        </p>
-                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
-                                                        <h6 class="text-sm mb-0">صالح</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-bus text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">Delivery</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                Shuwaik - Mubarkal kaber
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="align-middle text-sm">
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-money text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">KNET</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                20.5 KWD
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="w-30">
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
-                                                            Scheduled
-                                                        </p>
-                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center text-success">
-                                                        <span>
-                                                            <i class="fa fa-circle fs-6"></i>
-                                                            <small> @item.Status </small>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        }
-
-                                    </tbody>
-                                </table>
-                            </div>
+        <div class="row mt-4" id="divCompletedorder">
+            <div class="col-12 mb-lg-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0 p-3">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-2"></h6>
                         </div>
                     </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody id="completeditembody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <nav>
+                            <ul id="completedpagingli" class="pagination justify-content-end pagination-warning">
+                            </ul>
+                        </nav>
+                    </div>
+
+
+
                 </div>
-            }
+            </div>
+        </div>
 
-            if (Model.Count > 0)
-            {
-                <div class="row mt-4" id="divAllorder">
-                    <div class="col-12 mb-lg-0 mb-4">
-                        <div class="card">
-                            <div class="card-header pb-0 p-3">
-                                <div class="d-flex justify-content-between">
-                                    <h6 class="mb-2"></h6>
-                                </div>
-                            </div>
-                            <div class="table-responsive">
-                                <table class="table align-items-center">
-                                    <tbody>
-                                        @foreach (var item in Model)
-                                        {
-                                            <tr class="dataRow" orderid="@item.OrderId ">
-                                                <td class="w-30">
-                                                    <div class="ms-4">
-                                                        <p class="text-xs font-weight-bold mb-0">
-                                                            06 Feb 2023
-                                                        </p>
-                                                        <h6 class="text-sm mb-0 text-danger">05:30 pm</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0">#EWXGE123</p>
-                                                        <h6 class="text-sm mb-0">صالح</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-bus text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">Delivery</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                Shuwaik - Mubarkal kaber
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="align-middle text-sm">
-                                                    <div class="d-flex px-2 py-1 align-items-center">
-                                                        <div>
-                                                            <i class="fa fa-money text-secondary"></i>
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <small class="text-seconda">KNET</small>
-                                                            <p class="text-xs font-weight-bold mb-0">
-                                                                20.5 KWD
-                                                            </p>
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                <td class="w-30">
-                                                    <div class="text-center1">
-                                                        <p class="text-xs font-weight-bold mb-0 text-secondary">
-                                                            Scheduled
-                                                        </p>
-                                                        <h6 class="text-sm mb-0">08:00 AM - 02:00 PM</h6>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <div class="text-center text-success">
-                                                        <span>
-                                                            <i class="fa fa-circle fs-6"></i>
-                                                            <small> @item.Status  </small>
-                                                        </span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        }
 
-                                    </tbody>
-                                </table>
-                            </div>
+
+        <div class="row mt-4" id="divCancelledorder">
+            <div class="col-12 mb-lg-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0 p-3">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-2"></h6>
                         </div>
                     </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody id="cancelleditembody">
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div>
+                        <nav>
+                            <ul id="cancelledpagingli" class="pagination justify-content-end pagination-warning">
+                            </ul>
+                        </nav>
+                    </div>
+
+
                 </div>
-            }
-        }
+            </div>
+        </div>
+
+
+        <div class="row mt-4" id="divPendingorder">
+            <div class="col-12 mb-lg-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0 p-3">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-2"></h6>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table align-items-center">
+                            <tbody id="pendingitemtbody">
+                            </tbody>
+                        </table>
+                    </div>
+
+
+                    <div>
+                        <nav>
+                            <ul id="pendpagingli" class="pagination justify-content-end pagination-warning">
+                            </ul>
+                        </nav>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
 
 
 
+
+        <div class="row mt-4" id="divAllorder">
+            <div class="col-12 mb-lg-0 mb-4">
+                <div class="card">
+                    <div class="card-header pb-0 p-3">
+                        <div class="d-flex justify-content-between">
+                            <h6 class="mb-2"></h6>
+                        </div>
+                    </div>
+                    <div class="table-responsive">
+                        <table id="allitemtbody" class="table align-items-center">
+                        </table>
+                    </div>
+
+                    <div>
+                        <nav>
+                            <ul id="pagingli" class="pagination justify-content-end pagination-warning">
+                                @*<li class="page-item disabled">
+                                        <a class="page-link" href="javascript:;" tabindex="-1">
+                                            <i class="fa fa-angle-left"></i>
+                                            <span class="sr-only">Previous</span>
+                                        </a>
+                                    </li>*@
+                                @*<li class="page-item"><a class="page-link" href="javascript:;">1</a></li>
+                                    <li class="page-item active"><a class="page-link" href="javascript:;">2</a></li>
+                                    <li class="page-item"><a class="page-link" href="javascript:;">3</a></li>*@
+                                @*<li class="page-item">
+                                        <a class="page-link" href="javascript:;">
+                                            <i class="fa fa-angle-right"></i>
+                                            <span class="sr-only">Next</span>
+                                        </a>
+                                    </li>*@
+                            </ul>
+                        </nav>
+                    </div>
+
+                </div>
+            </div>
+        </div>
 
 
 
@@ -631,7 +469,9 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="col-12 col-md-12 bg-light rounded">
+
+                        <div class="col-12 col-md-12 bg-light rounded" id="printDiv">
+
                             <div class="p-2">
                                 <h5 class="mb-4">
                                     Payment Method
@@ -650,11 +490,11 @@
                                             Print
                                         </h5>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio1">
+                                            <input class="form-check-input" type="radio" name="printoption" printtype="A4" id="customRadio1">
                                             <label class="custom-control-label" for="customRadio1">A4</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault" id="customRadio2">
+                                            <input class="form-check-input" type="radio" name="printoption" printtype="thermal" id="customRadio2">
                                             <label class="custom-control-label" for="customRadio2">Thermal</label>
                                         </div>
                                     </div>
@@ -663,11 +503,11 @@
                                             Language
                                         </h5>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault1" id="customRadio11">
+                                            <input value="english" class="form-check-input printlanguage" type="radio" name="printlanguage" id="customRadio11" lng="english" >
                                             <label class="custom-control-label" for="customRadio11">English</label>
                                         </div>
                                         <div class="form-check">
-                                            <input class="form-check-input" type="radio" name="flexRadioDefault1" id="customRadio22">
+                                            <input value="arabic" class="form-check-input printlanguage" type="radio" name="printlanguage" id="customRadio22" lng="arabic">
                                             <label class="custom-control-label" for="customRadio22">Arabic</label>
                                         </div>
                                     </div>
@@ -676,6 +516,11 @@
                                             Status
                                         </h5>
                                         <div class="badge bg-success">Delivered</div>
+                                        <div class="form-check">
+
+                                            <input type="button" value="print" id="btnReceiptPrint" productid="" />
+
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -686,5 +531,7 @@
             </div>
         </div>
     </div>
+
+
 </body>
 </html>

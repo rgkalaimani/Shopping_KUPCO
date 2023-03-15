@@ -12,18 +12,22 @@ using DBLayer;
 
 namespace ShoppingAPI.Controllers
 {
+    [RoutePrefix("apiproduct")]
     public class apiproductcontroller : ApiController
     {
         DataSet ds;
         List<Product> productList;
         // GET: api/apiproductcontroller
-        public string Get()
+
+        [HttpPost]
+        [Route("getbytype")]
+        public string Get([FromBody] Product objProdut)
         {
             productList = new List<Product>();
-            
+
             ShoppingDatabase db = new ShoppingDatabase();
             List<KeyValuePair<string, string>> lst = new List<KeyValuePair<string, string>>();
-            lst.Add(new KeyValuePair<string, string>("@Type", "all"));
+            lst.Add(new KeyValuePair<string, string>("@Type", objProdut.ProductType));
             ds = db.ExecuteProcedure("SP_Product", lst);
             if (ds != null)
             {

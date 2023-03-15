@@ -83,12 +83,27 @@
     <link id="pagestyle" href="../Content/assets/css/dashboard.css" rel="stylesheet" />
 
     <link rel="stylesheet" href="../Content/assets/css/custom.css" />
+    <script src="~/Scripts/appsettings.js"></script>
+    <style>
+
+        .lblMessage {
+            color: red;
+        }
+    </style>
 </head>
 
 <body class="">
 
     @using (Html.BeginForm("Login", "User", FormMethod.Post))
     {
+
+
+        <a href="@Url.Action("ChangeLanguage","User",new { lang = "en" })">English</a> <span> |</span>
+        <a href="@Url.Action("ChangeLanguage","User",new { lang = "ar" })">
+            عربي
+        </a> <span> |</span>
+
+
         <div class="container position-sticky z-index-sticky top-0"></div>
         <main class="main-content mt-0">
             <section>
@@ -98,8 +113,10 @@
                             <div class="col-xl-4 col-lg-5 col-md-7 d-flex flex-column mx-lg-0 mx-auto">
                                 <div class="card card-plain">
                                     <div class="card-header pb-0 text-start">
-                                        <h4 class="font-weight-bolder">Sign In</h4>
-                                        <p class="mb-0">Enter your email and password to sign in</p>
+                                        <h4 class="font-weight-bolder"> @Resources.Global.Sign_In </h4>
+                                        <p class="mb-0">
+                                            @Resources.Global.Enter_email_password
+                                        </p>
                                     </div>
                                     <div class="card-body">
                                         <form role="form">
@@ -109,26 +126,28 @@
                                                     placeholder="Email"
                                                     aria-label="Email" />*@
 
-                                                @Html.TextBoxFor(a => a.UserName, new { Class = "form-control form-control-lg", placeholder = "Email" })
+                                                @Html.TextBoxFor(a => a.UserName, new { Class = "form-control form-control-lg", placeholder = @Resources.Global.Email })
                                                 @Html.ValidationMessageFor(a => a.UserName)
 
 
                                             </div>
                                             <div class="mb-3">
 
-                                                @Html.PasswordFor(a => a.Password, new { Class = "form-control form-control-lg", placeholder = "Password" })
+                                                @Html.PasswordFor(a => a.Password, new { Class = "form-control form-control-lg", placeholder = @Resources.Global.Password })
 
 
                                             </div>
-                                            <div class="form-check form-switch">
-                                                <input class="form-check-input"
+                                            @* <div class="form-check form-switch">
+                                                                                        <input class="form-check-input"
                                                        type="checkbox"
                                                        id="rememberMe" />
-                                                <label class="form-check-label" for="rememberMe">Remember me</label>
-                                            </div>
+                                                <label class="form-check-label" for="rememberMe">تذكرنى</label>
+                                                                                    </div>*@
                                             <div class="text-center">
 
-                                                <button type="Submit" class="btn btn-lg btn-primary btn-lg w-100 mt-4 mb-0">Sign in</button>
+                                                <button type="Submit" class="btn btn-lg btn-primary btn-lg w-100 mt-4 mb-0">@Resources.Global.Sign_In </button>
+
+                                                <label class="lblMessage">@ViewBag.loginmessage</label>
                                             </div>
                                         </form>
                                     </div>
@@ -164,7 +183,9 @@
                     damping: "0.5",
                 };
                 Scrollbar.init(document.querySelector("#sidenav-scrollbar"), options);
-            }</script>
+            }
+
+        </script>
         <script async defer src="https://buttons.github.io/buttons.js"></script>
         <script src="./assets/js/dashboard.min.js"></script>
     }

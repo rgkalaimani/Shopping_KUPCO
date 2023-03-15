@@ -16,7 +16,9 @@ namespace ShoppingApplication.Models.Viewmodel
 
         public string LName { get; set; }
 
-        public DateTime EntryDate { get; set; }
+        public string EntryDate { get; set; }
+
+        public string EntryTime { get; set; }
 
         public string Image { get; set; }
 
@@ -29,6 +31,27 @@ namespace ShoppingApplication.Models.Viewmodel
         public long TPrice { get; set; }
 
         public string Status { get; set; }
+
+        public string ScheduleTime { get; set; }
+
+        public string PaymentType { get; set; }
+
+        public string DeliveryDate { get; set; }
+
+        public string DeliveryPerson { get; set; }
+
+        public string userRole { get; set; }
+
+        public string pageNumber { get; set; }
+
+        public string rowsOfPage { get; set; }
+
+        public string totalRows { get; set; }
+
+        public string OrderNumber { get; set; }
+
+        public string PickupTime { get; set; }        
+
     }
 
     public class Customer
@@ -41,14 +64,127 @@ namespace ShoppingApplication.Models.Viewmodel
 
         public string City { get; set; }
 
+        public string CityId { get; set; }
+
+        public string DriverId { get; set; }
+
         public string Address1 { get; set; }
 
         public string Address2 { get; set; }
 
-        public string Address3 { get; set; }        
+        public string Address3 { get; set; }
 
         public bool IsActive { get; set; }
 
+        public string SelectedItem { get; set; }
+
+        public string SelectedProd { get; set; }
+
+        public string paymentType { get; set; }
+
+        public string scheduleTime { get; set; }
+
+        public string AddressType { get; set; }
+
+        public string DeliveryDate { get; set; }
+
+        public string Note { get; set; }
+
+        public VoucherOrder VouvherOrderInfo { get; set; }
+
+        public long CreatedBy { get; set; }
+
+        public string lastOrderdate { get; set; }
+
+        public int totalOrders { get; set; }
+
+        public int cancelled { get; set; }
+
+        public int PageNumber { get; set; }
+
+        public int RowsOfPage { get; set; }
+
+        public int totalrows { get; set; }
+
+
+    }
+
+    public class VoucherOrder
+    {
+
+        public string TotalAmunt { get; set; }
+
+        public string NetAmount { get; set; }
+
+        public string CounponCode { get; set; }
+
+        public long CounponId { get; set; }
+
+        public string DiscountPercent { get; set; }
+
+        public string DiscountedAmount { get; set; }
+
+        public string DiscountType { get; set; }
+
+        public string DiscountId { get; set; }
+
+    }
+
+
+    public class Voucher
+    {
+        public long Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string startdate { get; set; }
+
+        public string enddate { get; set; }
+
+        public string OfferType { get; set; }
+
+        public string OfferPercent { get; set; }
+
+        public string OfferAmount { get; set; }
+
+        public string CreatedBy { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime ModifiedOn { get; set; }
+    }
+
+
+    public class Slaughter
+    {
+        public string DeliveryDate { get; set; }
+
+        public int Id { get; set; }
+
+        public string ProductType { get; set; }
+
+        public string Name { get; set; }
+
+        public string Name_Ar { get; set; }
+
+        public int Frozen { get; set; }
+
+        public int FreshEggs { get; set; }
+
+        public int Fresh { get; set; }
+
+
+    }
+
+    public class UserProduct
+    {
+        public string productId { get; set; }
+
+        public string count { get; set; }
+
+        public string productType { get; set; }
     }
 
     public class Product
@@ -62,6 +198,8 @@ namespace ShoppingApplication.Models.Viewmodel
         public double Price { get; set; }
         public string priceLbl { get; set; }
         public string priceLblAr { get; set; }
+        public string Description { get; set; }
+
         public bool isActive { get; set; }
         public DateTime CreatedOn { get; set; }
 
@@ -102,6 +240,61 @@ namespace ShoppingApplication.Models.Viewmodel
 
     }
 
+    public class City
+    {
+        public long Id { get; set; }
+
+        public string Name { get; set; }
+
+        public string Name_Ar { get; set; }
+
+        public long CreatedBy { get; set; }
+
+        public bool IsActive { get; set; }
+
+        public long DriverId { get; set; }
+
+    }
+
+    public class ReportInfo
+    {
+        public int CreatedBy { get; set; }
+
+        public string Name { get; set; }
+
+        public string CreatedOn { get; set; }
+
+        public string CreatedOrders { get; set; }
+
+
+    }
+
+    public class ReportTotalInfo
+    {
+
+        public string Month { get; set; }
+
+        public string MonthlySales { get; set; }
+
+        public string MonthlyOrders { get; set; }
+
+        public string Today { get; set; }
+
+        public string TodaySales { get; set; }
+
+        public string TodayOrders { get; set; }
+
+
+    }
+
+    public class Report
+    {
+        public List<ReportInfo> reportInfo { get; set; }
+
+        public ReportTotalInfo reportTtotalInfo { get; set; }
+
+    }
+
     public static class DataTableConverter
     {
         public static List<Order> DashboardList(DataTable dtInput)
@@ -120,18 +313,24 @@ namespace ShoppingApplication.Models.Viewmodel
                             UserName = item["OID"].ToString(),
                             UserId = Convert.ToInt64(item["UID"]),
                             LName = Convert.ToString(item["Iname"]),
-                            EntryDate = Convert.ToDateTime(item["EntryDate"]),
+                            EntryDate = Convert.ToString(item["EntryDate"]),
 
                             Image = Convert.ToString(item["Image"]),
                             IsActive = Convert.ToBoolean(item["IsActive"]),
                             Quantity = Convert.ToInt64(item["Qnt"]),
                             Price = Convert.ToInt64(item["Price"]),
                             TPrice = Convert.ToInt64(item["TPrice"]),
-                            Status = Convert.ToString(item["Status"])
-
+                            Status = Convert.ToString(item["Status"]),
+                            EntryTime = Convert.ToString(item["EntryTime"]),
+                            ScheduleTime = Convert.ToString(item["scheduleTime"]),
+                            PaymentType = Convert.ToString(item["PaymentType"]),
+                            DeliveryPerson = Convert.ToString(item["DeliveryPerson"]),
+                            totalRows = Convert.ToString(item["totalrows"]),
+                            pageNumber = Convert.ToString(item["PageNumber"]),
+                            rowsOfPage = Convert.ToString(item["RowsOfPage"]),
+                            OrderNumber = Convert.ToString(item["OrderNumber"]),
+                            PickupTime = Convert.ToString(item["PickupTime"])
                         });
-
-
                     }
                 }
                 catch (Exception ex)
@@ -223,7 +422,8 @@ namespace ShoppingApplication.Models.Viewmodel
                             img = Convert.ToString(item["img"]),
                             Price = Convert.ToDouble(item["Price"]),
                             priceLbl = Convert.ToString(item["priceLbl"]),
-                            priceLblAr = Convert.ToString(item["priceLblAr"])
+                            priceLblAr = Convert.ToString(item["priceLblAr"]),
+                            Description = Convert.ToString(item["Description"])
 
                         });
 

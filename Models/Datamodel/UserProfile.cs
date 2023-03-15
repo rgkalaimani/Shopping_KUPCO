@@ -7,8 +7,15 @@ namespace ShoppingApplication.Models.Datamodel
 {
     public class UserProfile
     {
+        public long Id { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string UserType { get; set; }
+        public string UserRole { get; set; }
+        public bool IsActive { get; set; }
+        public long CreatedBy { get; set; }        
     }
 
     public class Customer
@@ -48,7 +55,6 @@ namespace ShoppingApplication.Models.Datamodel
         public string priceLblAr { get; set; }
         public bool isActive { get; set; }
         public DateTime CreatedOn { get; set; }
-
         public DateTime  ModifiedOn { get; set; }
     }
 }

@@ -1,2 +1,13 @@
 ﻿
-var appBaseUrl = "http://localhost:50174/api/";
+
+
+
+
+var host= window.location.protocol + "//" + window.location.host;
+
+
+var appBaseUrl = host + "/";
+
+
+
+
